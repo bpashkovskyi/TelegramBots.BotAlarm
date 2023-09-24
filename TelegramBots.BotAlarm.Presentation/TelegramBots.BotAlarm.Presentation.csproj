@@ -7,13 +7,21 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="MediatR" Version="10.0.1" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.5" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="Telegram.Bot" Version="17.0.0" />
 		<PackageReference Include="TelegramBots.Shared" Version="1.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\TelegramBots.BotAlarm.Application.Base\TelegramBots.BotAlarm.Application.Base.csproj" />
+	  <ProjectReference Include="..\TelegramBots.BotAlarm.Application\TelegramBots.BotAlarm.Application.csproj" />
 	  <ProjectReference Include="..\TelegramBots.BotAlarm.Domain\TelegramBots.BotAlarm.Domain.csproj" />
+	  <ProjectReference Include="..\TelegramBots.BotAlarm.Infrastructure\TelegramBots.BotAlarm.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>
