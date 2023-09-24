@@ -5,7 +5,7 @@
 [AllowedChats(AppSettings.AdminChatId)]
 public class ContinueUpdateHandler : UpdateHandler
 {
-    private readonly IAlarmService _alarmService;
+    private readonly IAlarmService alarmService;
     private readonly IBotService botService;
 
     public ContinueUpdateHandler(
@@ -15,13 +15,13 @@ public class ContinueUpdateHandler : UpdateHandler
         IBotService botService)
         : base(rollbar, telegramBotClient)
     {
-        this._alarmService = alarmService;
+        this.alarmService = alarmService;
         this.botService = botService;
     }
 
     public override async Task HandleAsync(Update update)
     {
-        await this._alarmService.NotifyContinuationAsync();
+        await this.alarmService.NotifyContinuationAsync();
         await this.botService.StopAutomaticChecking();
     }
 }

@@ -5,7 +5,7 @@
 [AllowedChats(AppSettings.AdminChatId)]
 public class DayUpdateHandler : UpdateHandler
 {
-    private readonly ICurfewService _curfewService;
+    private readonly ICurfewService curfewService;
     private readonly IBotService botService;
 
     public DayUpdateHandler(
@@ -15,13 +15,13 @@ public class DayUpdateHandler : UpdateHandler
         IBotService botService)
         : base(rollbar, telegramBotClient)
     {
-        this._curfewService = curfewService;
+        this.curfewService = curfewService;
         this.botService = botService;
     }
 
     public override async Task HandleAsync(Update update)
     {
-        await this._curfewService.NotifyDayAsync();
+        await this.curfewService.NotifyDayAsync();
         await this.botService.StopAutomaticChecking();
     }
 }

@@ -4,7 +4,7 @@ public class AlarmStatusCheckingService : IAlarmStatusCheckingService
 {
     private readonly ILogger rollbar;
 
-    private readonly IAlarmService _alarmService;
+    private readonly IAlarmService alarmService;
     private readonly IAlarmApiClient alarmApiClient;
     private readonly AlarmBotContext alarmBotContext;
 
@@ -16,7 +16,7 @@ public class AlarmStatusCheckingService : IAlarmStatusCheckingService
     {
         this.rollbar = rollbar;
 
-        this._alarmService = alarmService;
+        this.alarmService = alarmService;
         this.alarmApiClient = alarmApiClient;
         this.alarmBotContext = alarmBotContext;
     }
@@ -44,15 +44,15 @@ public class AlarmStatusCheckingService : IAlarmStatusCheckingService
 
             if (this.IsAlarmHasToBeNotified(lastAlarmLog, isAlarmActive))
             {
-                await this._alarmService.NotifyAlarmAsync();
+                await this.alarmService.NotifyAlarmAsync();
             }
             else if (this.IsContinuationHasToBeNotified(lastAlarmLog, isAlarmActive))
             {
-                await this._alarmService.NotifyContinuationAsync();
+                await this.alarmService.NotifyContinuationAsync();
             }
             else if (this.IsRejectHasToBeNotified(lastAlarmLog, isAlarmActive))
             {
-                await this._alarmService.NotifyRejectAsync();
+                await this.alarmService.NotifyRejectAsync();
             }
             else if (this.IsQuietTimeHasToBeNotified(lastAlarmLog, isAlarmActive))
             {
@@ -60,7 +60,7 @@ public class AlarmStatusCheckingService : IAlarmStatusCheckingService
                 if (lastAlarmLogWithTypeReject != null)
                 {
                     var hoursWithoutAlarm = (int)(DateTime.UtcNow - lastAlarmLogWithTypeReject.DateTime).TotalHours;
-                    await this._alarmService.NotifyQuiteTimeAsync(hoursWithoutAlarm);
+                    await this.alarmService.NotifyQuiteTimeAsync(hoursWithoutAlarm);
                 }
             }
         }

@@ -18,8 +18,8 @@ using Rollbar;
 [TestClass]
 public class CurfewStatusCheckingServiceTest
 {
-    private readonly DateTime Day = new DateTime(2022, 1, 1, 15, 0, 0);
-    private readonly DateTime Night = new DateTime(2022, 1, 1, 3, 0, 0);
+    private readonly DateTime day = new DateTime(2022, 1, 1, 15, 0, 0);
+    private readonly DateTime night = new DateTime(2022, 1, 1, 3, 0, 0);
 
     [TestInitialize]
     public async Task TestInitialize()
@@ -68,7 +68,7 @@ public class CurfewStatusCheckingServiceTest
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Night);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.night);
 
             curfewNotificationServiceMock.Verify(curfewNotificationService => curfewNotificationService.NotifyNightAsync());
         }
@@ -95,7 +95,7 @@ public class CurfewStatusCheckingServiceTest
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Night);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.night);
 
             curfewNotificationServiceMock.Verify(curfewNotificationService => curfewNotificationService.NotifyNightAsync());
         }
@@ -119,7 +119,7 @@ public class CurfewStatusCheckingServiceTest
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Night);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.night);
         }
     }
 
@@ -147,7 +147,7 @@ public class CurfewStatusCheckingServiceTest
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Night);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.night);
 
             rollbarMock.Verify(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()));
         }
@@ -167,7 +167,7 @@ public class CurfewStatusCheckingServiceTest
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Day);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.day);
 
             curfewNotificationServiceMock.Verify(curfewNotificationService => curfewNotificationService.NotifyDayAsync());
         }
@@ -194,7 +194,7 @@ public class CurfewStatusCheckingServiceTest
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Day);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.day);
 
             curfewNotificationServiceMock.Verify(curfewNotificationService => curfewNotificationService.NotifyDayAsync());
         }
@@ -218,7 +218,7 @@ public class CurfewStatusCheckingServiceTest
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Day);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.day);
         }
     }
 
@@ -246,7 +246,7 @@ public class CurfewStatusCheckingServiceTest
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Day);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.day);
 
             rollbarMock.Verify(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()));
         }

@@ -4,13 +4,13 @@ public class CurfewStatusCheckingService : ICurfewStatusCheckingService
 {
     private readonly ILogger rollbar;
 
-    private readonly ICurfewService _curfewService;
+    private readonly ICurfewService curfewService;
     private readonly AlarmBotContext alarmBotContext;
 
     public CurfewStatusCheckingService(IRollbar rollbar, ICurfewService curfewService, AlarmBotContext alarmBotContext)
     {
         this.rollbar = rollbar;
-        this._curfewService = curfewService;
+        this.curfewService = curfewService;
         this.alarmBotContext = alarmBotContext;
     }
 
@@ -32,11 +32,11 @@ public class CurfewStatusCheckingService : ICurfewStatusCheckingService
 
             if (this.IsNightHasToBeNotified(lastCurfewLog, isNight))
             {
-                await this._curfewService.NotifyNightAsync();
+                await this.curfewService.NotifyNightAsync();
             }
             else if (this.IsDayHasToBeNotified(lastCurfewLog, isNight))
             {
-                await this._curfewService.NotifyDayAsync();
+                await this.curfewService.NotifyDayAsync();
             }
         }
         catch (Exception exception)
