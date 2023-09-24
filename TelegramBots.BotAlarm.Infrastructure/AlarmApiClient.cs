@@ -25,7 +25,7 @@ public class AlarmApiClient : IAlarmApiClient
 
     public async Task<Dictionary<string, bool>?> GetRegionAlarmsAsync()
     {
-        var regionAlarms = await this.GetVadimKlimenkoRegionAlarmsAsync().ConfigureAwait(false);
+        var regionAlarms = await this.GetVadimKlimenkoRegionAlarmsAsync();
 
         return regionAlarms;
     }
@@ -34,7 +34,7 @@ public class AlarmApiClient : IAlarmApiClient
     {
         try
         {
-            var jsonString = await this.DownloadJsonAsync(new Uri("https://vadimklimenko.com/map/statuses.json")).ConfigureAwait(false);
+            var jsonString = await this.DownloadJsonAsync(new Uri("https://vadimklimenko.com/map/statuses.json"));
 
             var regionAlarms = JObject.Parse(jsonString)["states"]?.Children()
                 .Select(region => region as JProperty)
@@ -44,7 +44,7 @@ public class AlarmApiClient : IAlarmApiClient
         }
         catch
         {
-            await this.telegramBotClient.SendTextMessageAsync(AppSettings.BoId, "VadimKlimenkoApiClient failed").ConfigureAwait(false);
+            await this.telegramBotClient.SendTextMessageAsync(AppSettings.BoId, "VadimKlimenkoApiClient failed");
             return null;
         }
     }
@@ -52,8 +52,8 @@ public class AlarmApiClient : IAlarmApiClient
     private async Task<string> DownloadJsonAsync(Uri url)
     {
         using var httpClient = new HttpClient();
-        var httpResponseMessage = await httpClient.GetAsync(url).ConfigureAwait(false);
-        var stringContent = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var httpResponseMessage = await httpClient.GetAsync(url);
+        var stringContent = await httpResponseMessage.Content.ReadAsStringAsync();
 
         return stringContent;
     }

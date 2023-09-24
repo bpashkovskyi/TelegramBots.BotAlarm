@@ -28,7 +28,7 @@ public class SafeTelegramClient : ISafeTelegramClient
     {
         try
         {
-            return await this.telegramBotClient.SendTextMessageAsync(chatId, messageText, ParseMode.Html).ConfigureAwait(false);
+            return await this.telegramBotClient.SendTextMessageAsync(chatId, messageText, ParseMode.Html);
         }
         catch (Exception exception)
         {
@@ -47,7 +47,7 @@ public class SafeTelegramClient : ISafeTelegramClient
     {
         try
         {
-            return await this.telegramBotClient.SendStickerAsync(chatId, new InputOnlineFile(fileId)).ConfigureAwait(false);
+            return await this.telegramBotClient.SendStickerAsync(chatId, new InputOnlineFile(fileId));
         }
         catch (Exception exception)
         {
@@ -72,7 +72,7 @@ public class SafeTelegramClient : ISafeTelegramClient
                 {
                     CanSendMessages = false,
                     CanSendMediaMessages = false,
-                }).ConfigureAwait(false);
+                });
         }
         catch (Exception exception)
         {
@@ -95,7 +95,7 @@ public class SafeTelegramClient : ISafeTelegramClient
                 {
                     CanSendMessages = true,
                     CanSendMediaMessages = true,
-                }).ConfigureAwait(false);
+                });
         }
         catch (Exception exception)
         {
@@ -112,7 +112,7 @@ public class SafeTelegramClient : ISafeTelegramClient
     {
         try
         {
-            await this.telegramBotClient.DeleteMessageAsync(chatId, messageId).ConfigureAwait(false);
+            await this.telegramBotClient.DeleteMessageAsync(chatId, messageId);
         }
         catch (Exception exception)
         {

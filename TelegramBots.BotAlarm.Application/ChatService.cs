@@ -18,38 +18,38 @@ public class ChatService : IChatService
 
     public async Task<Result<DbChat>> AddChatAsync(long telegramId)
     {
-        var chat = await telegramBotClient.GetChatAsync(telegramId).ConfigureAwait(false);
+        var chat = await this.telegramBotClient.GetChatAsync(telegramId);
 
-        var existingDbChat = await alarmBotContext.Chats.WithTelegramId(telegramId).ConfigureAwait(false);
+        var existingDbChat = await this.alarmBotContext.Chats.WithTelegramId(telegramId);
         if (existingDbChat != null)
         {
             return Result<DbChat>.Fail();
         }
 
         var dbChat = new DbChat(chat);
-        await alarmBotContext.Chats.AddAsync(dbChat).ConfigureAwait(false);
-        await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+        await this.alarmBotContext.Chats.AddAsync(dbChat);
+        await this.alarmBotContext.SaveChangesAsync();
 
         return Result<DbChat>.Ok(dbChat);
     }
 
     public async Task<Result<DbChat>> RemoveChatAsync(long telegramId)
     {
-        var existingDbChat = await alarmBotContext.Chats.WithTelegramId(telegramId).ConfigureAwait(false);
+        var existingDbChat = await this.alarmBotContext.Chats.WithTelegramId(telegramId);
         if (existingDbChat == null)
         {
             return Result<DbChat>.Fail();
         }
 
-        alarmBotContext.Remove(existingDbChat);
-        await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+        this.alarmBotContext.Remove(existingDbChat);
+        await this.alarmBotContext.SaveChangesAsync();
 
         return Result<DbChat>.Ok(existingDbChat);
     }
 
     public async Task<Result<DbChat>> UpdateChatSettings(long chatTelegramId, Action<ChatSettings> action)
     {
-        var existingDbChat = await alarmBotContext.Chats.WithTelegramId(chatTelegramId).ConfigureAwait(false);
+        var existingDbChat = await this.alarmBotContext.Chats.WithTelegramId(chatTelegramId);
         if (existingDbChat == null)
         {
             return Result<DbChat>.Fail();
@@ -57,7 +57,7 @@ public class ChatService : IChatService
 
         action(existingDbChat.Settings);
 
-        await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+        await this.alarmBotContext.SaveChangesAsync();
 
         return Result<DbChat>.Ok(existingDbChat);
     }

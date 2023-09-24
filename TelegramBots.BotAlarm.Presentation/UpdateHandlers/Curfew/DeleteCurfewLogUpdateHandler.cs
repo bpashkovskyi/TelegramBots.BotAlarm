@@ -22,7 +22,7 @@ public class DeleteCurfewLogUpdateHandler : UpdateHandler
         var curfewLogId = message.TextAsInt();
         if (curfewLogId != null)
         {
-            await this.curfewService.RemoveCurfewLogAsync(curfewLogId.Value).ConfigureAwait(false);
+            await this.curfewService.RemoveCurfewLogAsync(curfewLogId.Value);
         }
     }
 }

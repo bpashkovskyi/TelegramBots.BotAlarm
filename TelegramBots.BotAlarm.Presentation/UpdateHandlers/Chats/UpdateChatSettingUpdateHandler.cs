@@ -27,32 +27,32 @@ public class UpdateChatSettingUpdateHandler : UpdateHandler
             var chatId = message.TextAsLong();
             if (chatId != null)
             {
-                await this.UpdateChatSettingsAsync(message.Chat.Id, chatId.Value, action).ConfigureAwait(false);
+                await this.UpdateChatSettingsAsync(message.Chat.Id, chatId.Value, action);
             }
 
             return;
         }
 
-        var memberInfo = await this.TelegramBotClient.GetChatMemberAsync(message.Chat.Id, message.From!.Id).ConfigureAwait(false);
+        var memberInfo = await this.TelegramBotClient.GetChatMemberAsync(message.Chat.Id, message.From!.Id);
         if (memberInfo.Status is not (ChatMemberStatus.Administrator or ChatMemberStatus.Creator))
         {
-            await this.TelegramBotClient.SendTextMessageAsync(message.Chat.Id, "Вам потрібні права адміністратора").ConfigureAwait(false);
+            await this.TelegramBotClient.SendTextMessageAsync(message.Chat.Id, "Вам потрібні права адміністратора");
             return;
         }
 
-        await this.UpdateChatSettingsAsync(message.Chat.Id, message.Chat.Id, action).ConfigureAwait(false);
+        await this.UpdateChatSettingsAsync(message.Chat.Id, message.Chat.Id, action);
     }
 
     private async Task UpdateChatSettingsAsync(long messageChatId, long targetChatId, Action<ChatSettings> action)
     {
-        var updateSettingsResult = await this.chatService.UpdateChatSettings(targetChatId, action).ConfigureAwait(false);
+        var updateSettingsResult = await this.chatService.UpdateChatSettings(targetChatId, action);
         if (updateSettingsResult.Success)
         {
-            await this.TelegramBotClient.SendTextMessageAsync(messageChatId, $"Налаштування чату оновлено: {JsonConvert.SerializeObject(updateSettingsResult.Value!.Settings, Formatting.Indented)}").ConfigureAwait(false);
+            await this.TelegramBotClient.SendTextMessageAsync(messageChatId, $"Налаштування чату оновлено: {JsonConvert.SerializeObject(updateSettingsResult.Value!.Settings, Formatting.Indented)}");
         }
         else
         {
-            await this.TelegramBotClient.SendTextMessageAsync(messageChatId, "Чат не знайдено").ConfigureAwait(false);
+            await this.TelegramBotClient.SendTextMessageAsync(messageChatId, "Чат не знайдено");
         }
     }
 

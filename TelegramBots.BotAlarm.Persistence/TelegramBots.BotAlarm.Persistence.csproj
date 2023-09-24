@@ -13,6 +13,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\TelegramBots.BotAlarm.Domain.Model\TelegramBots.BotAlarm.Domain.Model.csproj" />
+	  <ProjectReference Include="..\TelegramBots.BotAlarm.Persistence.Base\TelegramBots.BotAlarm.Persistence.Base.csproj" />
 	</ItemGroup>
 
 </Project>

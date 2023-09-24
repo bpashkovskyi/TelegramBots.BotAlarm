@@ -4,19 +4,19 @@ public class AlarmStatusCheckingService : IAlarmStatusCheckingService
 {
     private readonly ILogger rollbar;
 
-    private readonly IAlarmNotificationService alarmNotificationService;
+    private readonly IAlarmService _alarmService;
     private readonly IAlarmApiClient alarmApiClient;
     private readonly AlarmBotContext alarmBotContext;
 
     public AlarmStatusCheckingService(
         IRollbar rollbar,
-        IAlarmNotificationService alarmNotificationService,
+        IAlarmService alarmService,
         IAlarmApiClient alarmApiClient,
         AlarmBotContext alarmBotContext)
     {
         this.rollbar = rollbar;
 
-        this.alarmNotificationService = alarmNotificationService;
+        this._alarmService = alarmService;
         this.alarmApiClient = alarmApiClient;
         this.alarmBotContext = alarmBotContext;
     }
@@ -25,13 +25,13 @@ public class AlarmStatusCheckingService : IAlarmStatusCheckingService
     {
         try
         {
-            var lastServiceLog = await this.alarmBotContext.ServiceLogs.Last().ConfigureAwait(false);
+            var lastServiceLog = await this.alarmBotContext.ServiceLogs.Last();
             if (lastServiceLog?.ServiceType == ServiceType.Stop)
             {
                 return;
             }
 
-            var regionAlarms = await this.alarmApiClient.GetRegionAlarmsAsync().ConfigureAwait(false);
+            var regionAlarms = await this.alarmApiClient.GetRegionAlarmsAsync();
             if (regionAlarms == null)
             {
                 return;
@@ -40,27 +40,27 @@ public class AlarmStatusCheckingService : IAlarmStatusCheckingService
             var ifRegion = regionAlarms.First(region => region.Key == AppSettings.IfRegion);
             var isAlarmActive = ifRegion.Value;
 
-            var lastAlarmLog = await this.alarmBotContext.AlarmLogs.NotDeleted().Last().ConfigureAwait(false);
+            var lastAlarmLog = await this.alarmBotContext.AlarmLogs.NotDeleted().Last();
 
             if (this.IsAlarmHasToBeNotified(lastAlarmLog, isAlarmActive))
             {
-                await this.alarmNotificationService.NotifyAlarmAsync().ConfigureAwait(false);
+                await this._alarmService.NotifyAlarmAsync();
             }
             else if (this.IsContinuationHasToBeNotified(lastAlarmLog, isAlarmActive))
             {
-                await this.alarmNotificationService.NotifyContinuationAsync().ConfigureAwait(false);
+                await this._alarmService.NotifyContinuationAsync();
             }
             else if (this.IsRejectHasToBeNotified(lastAlarmLog, isAlarmActive))
             {
-                await this.alarmNotificationService.NotifyRejectAsync().ConfigureAwait(false);
+                await this._alarmService.NotifyRejectAsync();
             }
             else if (this.IsQuietTimeHasToBeNotified(lastAlarmLog, isAlarmActive))
             {
-                var lastAlarmLogWithTypeReject = await this.alarmBotContext.AlarmLogs.WithEventType(AlarmEventType.Reject).NotDeleted().Last().ConfigureAwait(false);
+                var lastAlarmLogWithTypeReject = await this.alarmBotContext.AlarmLogs.WithEventType(AlarmEventType.Reject).NotDeleted().Last();
                 if (lastAlarmLogWithTypeReject != null)
                 {
                     var hoursWithoutAlarm = (int)(DateTime.UtcNow - lastAlarmLogWithTypeReject.DateTime).TotalHours;
-                    await this.alarmNotificationService.NotifyQuiteTimeAsync(hoursWithoutAlarm).ConfigureAwait(false);
+                    await this._alarmService.NotifyQuiteTimeAsync(hoursWithoutAlarm);
                 }
             }
         }

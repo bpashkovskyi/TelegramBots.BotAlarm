@@ -28,9 +28,9 @@ public static class Program
         builder.Services.AddUpdatesMediator();
         builder.Services.AddMediatR(typeof(Program));
         builder.Services.AddScoped<IAlarmService, AlarmService>();
-        builder.Services.AddScoped<IAlarmNotificationService, AlarmNotificationService>();
+        builder.Services.AddScoped<IAlarmService, AlarmService>();
         builder.Services.AddScoped<ICurfewService, CurfewService>();
-        builder.Services.AddScoped<ICurfewNotificationService, CurfewNotificationService>();
+        builder.Services.AddScoped<ICurfewService, CurfewService>();
         builder.Services.AddScoped<IChatService, ChatService>();
         builder.Services.AddScoped<IBotService, BotService>();
 

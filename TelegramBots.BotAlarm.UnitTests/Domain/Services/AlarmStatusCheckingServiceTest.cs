@@ -23,10 +23,10 @@ public class AlarmStatusCheckingServiceTest
     public async Task TestInitialize()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
-            await alarmBotContext.Database.EnsureDeletedAsync().ConfigureAwait(false);
-            await alarmBotContext.Database.EnsureCreatedAsync().ConfigureAwait(false);
+            await alarmBotContext.Database.EnsureDeletedAsync();
+            await alarmBotContext.Database.EnsureCreatedAsync();
         }
     }
 
@@ -34,22 +34,22 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldNotDoAnythingIfLastServiceLogIsNull()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.ServiceLogs.Add(new ServiceLog(ServiceType.Stop));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
         }
     }
 
@@ -57,7 +57,7 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldNotifyAlarmIfAlarmIsActiveAndLastAlarmLogIsNull()
     {
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         alarmApiClientMock.Setup(alarmApiClient => alarmApiClient.GetRegionAlarmsAsync())
@@ -67,11 +67,11 @@ public class AlarmStatusCheckingServiceTest
             .Returns(Task.FromResult(0));
 
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
 
             alarmNotificationServiceMock.Verify(alarmNotificationService => alarmNotificationService.NotifyAlarmAsync());
         }
@@ -81,14 +81,14 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldNotifyAlarmIfAlarmIsActiveAndLastAlarmLogHasTypeReject()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.Reject));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         alarmApiClientMock.Setup(alarmApiClient => alarmApiClient.GetRegionAlarmsAsync())
@@ -98,11 +98,11 @@ public class AlarmStatusCheckingServiceTest
             .Returns(Task.FromResult(0));
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
 
             alarmNotificationServiceMock.Verify(alarmNotificationService => alarmNotificationService.NotifyAlarmAsync());
         }
@@ -112,14 +112,14 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldNotifyAlarmIfAlarmIsActiveAndLastAlarmLogHasTypeQuiteTime()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.QuiteTime));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         alarmApiClientMock.Setup(alarmApiClient => alarmApiClient.GetRegionAlarmsAsync())
@@ -129,11 +129,11 @@ public class AlarmStatusCheckingServiceTest
             .Returns(Task.FromResult(0));
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
 
             alarmNotificationServiceMock.Verify(alarmNotificationService => alarmNotificationService.NotifyAlarmAsync());
         }
@@ -143,14 +143,14 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldLogExceptionIfNotifyAlarmFailed()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.QuiteTime));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         rollbarMock.Setup(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()))
@@ -163,11 +163,11 @@ public class AlarmStatusCheckingServiceTest
             .ThrowsAsync(new InvalidOperationException());
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
 
             rollbarMock.Verify(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()));
         }
@@ -177,14 +177,14 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldNotifyContinueIfAlarmIsActiveAndLastAlarmLogWasMoreThanHourAgo()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.Alarm) { DateTime = DateTime.UtcNow.AddHours(-2) });
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         alarmApiClientMock.Setup(alarmApiClient => alarmApiClient.GetRegionAlarmsAsync())
@@ -194,11 +194,11 @@ public class AlarmStatusCheckingServiceTest
             .Returns(Task.FromResult(0));
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
 
             alarmNotificationServiceMock.Verify(alarmNotificationService => alarmNotificationService.NotifyContinuationAsync());
         }
@@ -208,14 +208,14 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldLogExceptionIfNotifyContinuationFailed()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.Alarm) { DateTime = DateTime.UtcNow.AddHours(-2) });
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         rollbarMock.Setup(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()))
@@ -228,11 +228,11 @@ public class AlarmStatusCheckingServiceTest
             .ThrowsAsync(new InvalidOperationException());
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
 
             rollbarMock.Verify(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()));
         }
@@ -242,14 +242,14 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldNotifyRejectIfAlarmIsNotActiveAndLastAlarmLogIsAlarm()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.Alarm));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         alarmApiClientMock.Setup(alarmApiClient => alarmApiClient.GetRegionAlarmsAsync())
@@ -259,11 +259,11 @@ public class AlarmStatusCheckingServiceTest
             .Returns(Task.FromResult(0));
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
 
             alarmNotificationServiceMock.Verify(alarmNotificationService => alarmNotificationService.NotifyRejectAsync());
         }
@@ -273,14 +273,14 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldNotifyRejectIfAlarmIsNotActiveAndLastAlarmLogIsContinue()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.Continue));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         alarmApiClientMock.Setup(alarmApiClient => alarmApiClient.GetRegionAlarmsAsync())
@@ -290,11 +290,11 @@ public class AlarmStatusCheckingServiceTest
             .Returns(Task.FromResult(0));
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
 
             alarmNotificationServiceMock.Verify(alarmNotificationService => alarmNotificationService.NotifyRejectAsync());
         }
@@ -304,14 +304,14 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldLogExceptionIfNotifyRejectFailed()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.Continue));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         rollbarMock.Setup(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()))
@@ -324,11 +324,11 @@ public class AlarmStatusCheckingServiceTest
             .ThrowsAsync(new InvalidOperationException());
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
 
             rollbarMock.Verify(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()));
         }
@@ -338,14 +338,14 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldNotifyQuitTimeIfAlarmIsNotActiveAndLastAlarmLogIsRejectAndLastAlarmLogWasMoreThanHourAgo()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.Reject) { DateTime = DateTime.UtcNow.AddHours(-2) });
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         alarmNotificationServiceMock.Setup(alarmNotificationService => alarmNotificationService.NotifyQuiteTimeAsync(2))
@@ -355,11 +355,11 @@ public class AlarmStatusCheckingServiceTest
             .ReturnsAsync(new Dictionary<string, bool> { { AppSettings.IfRegion, false } });
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
 
             alarmNotificationServiceMock.Verify(alarmNotificationService => alarmNotificationService.NotifyQuiteTimeAsync(2));
         }
@@ -369,15 +369,15 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldNotifyQuitTimeIfAlarmIsNotActiveAndLastAlarmLogIsQuietTimeAndLastAlarmLogWasMoreThanHourAgo()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.Reject) { DateTime = DateTime.UtcNow.AddHours(-3) });
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.QuiteTime) { DateTime = DateTime.UtcNow.AddHours(-2) });
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         alarmApiClientMock.Setup(alarmApiClient => alarmApiClient.GetRegionAlarmsAsync())
@@ -387,11 +387,11 @@ public class AlarmStatusCheckingServiceTest
             .Returns(Task.FromResult(0));
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
 
             alarmNotificationServiceMock.Verify(alarmNotificationService => alarmNotificationService.NotifyQuiteTimeAsync(3));
         }
@@ -401,15 +401,15 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldLogExceptionIfNotifyQuitTimeFailed()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.Reject) { DateTime = DateTime.UtcNow.AddHours(-3) });
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.QuiteTime) { DateTime = DateTime.UtcNow.AddHours(-2) });
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         rollbarMock.Setup(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()))
@@ -422,11 +422,11 @@ public class AlarmStatusCheckingServiceTest
             .ThrowsAsync(new InvalidOperationException());
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
 
             rollbarMock.Verify(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()));
         }
@@ -436,25 +436,25 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldDoNothingIfAlarmIsActiveAndLastAlarmLogIsAlarm()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.Alarm));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         alarmApiClientMock.Setup(alarmApiClient => alarmApiClient.GetRegionAlarmsAsync())
             .ReturnsAsync(new Dictionary<string, bool> { { AppSettings.IfRegion, true } });
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
         }
     }
 
@@ -462,25 +462,25 @@ public class AlarmStatusCheckingServiceTest
     public async Task CheckForAlarmAndNotifyShouldDoNothingIfAlarmIsNotActiveAndLastAlarmLogIsRejectAndLastAlarmLogWasLessThanHourAgo()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.AlarmLogs.Add(new AlarmLog(AlarmEventType.Reject));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var alarmNotificationServiceMock = new Mock<IAlarmNotificationService>(MockBehavior.Strict);
+        var alarmNotificationServiceMock = new Mock<IAlarmService>(MockBehavior.Strict);
         var alarmApiClientMock = new Mock<IAlarmApiClient>(MockBehavior.Strict);
 
         alarmApiClientMock.Setup(alarmApiClient => alarmApiClient.GetRegionAlarmsAsync())
             .ReturnsAsync(new Dictionary<string, bool> { { AppSettings.IfRegion, false } });
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var alarmStatusCheckingService = new AlarmStatusCheckingService(rollbarMock.Object, alarmNotificationServiceMock.Object, alarmApiClientMock.Object, alarmBotContext);
 
-            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync().ConfigureAwait(false);
+            await alarmStatusCheckingService.CheckForAlarmAndNotifyAsync();
         }
     }
 }

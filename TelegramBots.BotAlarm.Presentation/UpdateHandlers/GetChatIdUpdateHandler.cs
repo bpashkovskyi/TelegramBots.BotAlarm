@@ -16,6 +16,6 @@ public class GetChatIdUpdateHandler : UpdateHandler
 
         var chatIdAsString = message.Chat.Id.ToString(CultureInfo.InvariantCulture);
 
-        await this.TelegramBotClient.SendTextMessageAsync(message.Chat.Id, chatIdAsString).ConfigureAwait(false);
+        await this.TelegramBotClient.SendTextMessageAsync(message.Chat.Id, chatIdAsString);
     }
 }

@@ -18,6 +18,6 @@ public class StopAutomaticCheckingUpdateHandler : UpdateHandler
 
     public override async Task HandleAsync(Update update)
     {
-        await this.botService.StopAutomaticChecking().ConfigureAwait(false);
+        await this.botService.StopAutomaticChecking();
     }
 }

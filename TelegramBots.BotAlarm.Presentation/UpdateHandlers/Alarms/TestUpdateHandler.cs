@@ -5,23 +5,23 @@
 [AllowedChats(AppSettings.AdminChatId)]
 public class TestUpdateHandler : UpdateHandler
 {
-    private readonly IAlarmNotificationService alarmNotificationService;
+    private readonly IAlarmService _alarmService;
     private readonly IBotService botService;
 
     public TestUpdateHandler(
         IRollbar rollbar,
         ITelegramBotClient telegramBotClient,
-        IAlarmNotificationService alarmNotificationService,
+        IAlarmService alarmService,
         IBotService botService)
         : base(rollbar, telegramBotClient)
     {
-        this.alarmNotificationService = alarmNotificationService;
+        this._alarmService = alarmService;
         this.botService = botService;
     }
 
     public override async Task HandleAsync(Update update)
     {
-        await this.alarmNotificationService.NotifyTestAsync().ConfigureAwait(false);
-        await this.botService.StopAutomaticChecking().ConfigureAwait(false);
+        await this._alarmService.NotifyTestAsync();
+        await this.botService.StopAutomaticChecking();
     }
 }

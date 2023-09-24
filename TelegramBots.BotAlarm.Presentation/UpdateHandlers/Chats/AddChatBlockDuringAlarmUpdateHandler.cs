@@ -8,6 +8,6 @@ public class AddChatBlockDuringAlarmUpdateHandler : UpdateChatSettingUpdateHandl
 
     public override async Task HandleAsync(Update update)
     {
-        await this.UpdateChatSettingsAsync(update, chatSettings => chatSettings.BlockChatDuringAlarm = true).ConfigureAwait(false);
+        await this.UpdateChatSettingsAsync(update, chatSettings => chatSettings.BlockChatDuringAlarm = true);
     }
 }

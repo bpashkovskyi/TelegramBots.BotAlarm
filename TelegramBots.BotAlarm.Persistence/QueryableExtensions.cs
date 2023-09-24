@@ -9,22 +9,22 @@ public static class QueryableExtensions
 {
     public static async Task<DbChat?> WithTelegramId(this IQueryable<DbChat> chats, long telegramId)
     {
-        return await chats.FirstOrDefaultAsync(chat => chat.TelegramId == telegramId).ConfigureAwait(false);
+        return await chats.FirstOrDefaultAsync(chat => chat.TelegramId == telegramId);
     }
 
     public static async Task<AlarmLog?> Last(this IQueryable<AlarmLog> alarmLogs)
     {
-        return await alarmLogs.OrderByDescending(alarmLog => alarmLog.DateTime).FirstOrDefaultAsync().ConfigureAwait(false);
+        return await alarmLogs.OrderByDescending(alarmLog => alarmLog.DateTime).FirstOrDefaultAsync();
     }
 
     public static async Task<CurfewLog?> Last(this IQueryable<CurfewLog> curfewLogs)
     {
-        return await curfewLogs.OrderByDescending(curfewLog => curfewLog.DateTime).FirstOrDefaultAsync().ConfigureAwait(false);
+        return await curfewLogs.OrderByDescending(curfewLog => curfewLog.DateTime).FirstOrDefaultAsync();
     }
 
     public static async Task<ServiceLog?> Last(this IQueryable<ServiceLog> serviceLogs)
     {
-        return await serviceLogs.OrderByDescending(serviceLog => serviceLog.DateTime).FirstOrDefaultAsync().ConfigureAwait(false);
+        return await serviceLogs.OrderByDescending(serviceLog => serviceLog.DateTime).FirstOrDefaultAsync();
     }
 
     public static IQueryable<AlarmLog> NotDeleted(this IQueryable<AlarmLog> alarmLogs)

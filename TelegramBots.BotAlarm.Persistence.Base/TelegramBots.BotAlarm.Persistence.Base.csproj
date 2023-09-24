@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TelegramBots.BotAlarm.Domain.Model\TelegramBots.BotAlarm.Domain.Model.csproj" />
+  </ItemGroup>
+
 </Project>

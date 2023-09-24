@@ -8,6 +8,6 @@ public class RemoveChatBlockDuringCurfewUpdateHandler : UpdateChatSettingUpdateH
 
     public override async Task HandleAsync(Update update)
     {
-        await this.UpdateChatSettingsAsync(update, chatSettings => chatSettings.BlockChatDuringCurfew = false).ConfigureAwait(false);
+        await this.UpdateChatSettingsAsync(update, chatSettings => chatSettings.BlockChatDuringCurfew = false);
     }
 }

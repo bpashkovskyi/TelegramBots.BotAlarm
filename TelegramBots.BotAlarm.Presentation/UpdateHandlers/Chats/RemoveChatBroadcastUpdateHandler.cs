@@ -8,6 +8,6 @@ public class RemoveChatBroadcastUpdateHandler : UpdateChatSettingUpdateHandler
 
     public override async Task HandleAsync(Update update)
     {
-        await this.UpdateChatSettingsAsync(update, chatSettings => chatSettings.BroadcastMessageDuringAlarm = false).ConfigureAwait(false);
+        await this.UpdateChatSettingsAsync(update, chatSettings => chatSettings.BroadcastMessageDuringAlarm = false);
     }
 }

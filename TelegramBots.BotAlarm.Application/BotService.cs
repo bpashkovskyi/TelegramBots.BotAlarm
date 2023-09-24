@@ -1,6 +1,4 @@
-﻿using TelegramBots.BotAlarm.Domain;
-
-namespace TelegramBots.BotAlarm.Application;
+﻿namespace TelegramBots.BotAlarm.Application;
 
 public class BotService : IBotService
 {
@@ -17,19 +15,19 @@ public class BotService : IBotService
     {
         var serviceLog = new ServiceLog(ServiceType.Stop);
 
-        await alarmBotContext.ServiceLogs.AddAsync(serviceLog).ConfigureAwait(false);
-        await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+        await this.alarmBotContext.ServiceLogs.AddAsync(serviceLog);
+        await this.alarmBotContext.SaveChangesAsync();
 
-        await safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.BotStoppedMessage).ConfigureAwait(false);
+        await this.safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.BotStoppedMessage);
     }
 
     public async Task StartAutomaticChecking()
     {
         var serviceLog = new ServiceLog(ServiceType.Start);
 
-        await alarmBotContext.ServiceLogs.AddAsync(serviceLog).ConfigureAwait(false);
-        await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+        await this.alarmBotContext.ServiceLogs.AddAsync(serviceLog);
+        await this.alarmBotContext.SaveChangesAsync();
 
-        await safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.BotStartedMessage).ConfigureAwait(false);
+        await this.safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.BotStartedMessage);
     }
 }

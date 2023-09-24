@@ -25,10 +25,10 @@ public class CurfewStatusCheckingServiceTest
     public async Task TestInitialize()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
-            await alarmBotContext.Database.EnsureDeletedAsync().ConfigureAwait(false);
-            await alarmBotContext.Database.EnsureCreatedAsync().ConfigureAwait(false);
+            await alarmBotContext.Database.EnsureDeletedAsync();
+            await alarmBotContext.Database.EnsureCreatedAsync();
         }
     }
 
@@ -36,21 +36,21 @@ public class CurfewStatusCheckingServiceTest
     public async Task CheckForCurfewAndNotifyShouldNotDoAnythingIfLastServiceLogIsNull()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.ServiceLogs.Add(new ServiceLog(ServiceType.Stop));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var curfewNotificationServiceMock = new Mock<ICurfewNotificationService>(MockBehavior.Strict);
+        var curfewNotificationServiceMock = new Mock<ICurfewService>(MockBehavior.Strict);
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(DateTime.UtcNow).ConfigureAwait(false);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(DateTime.UtcNow);
         }
     }
 
@@ -58,17 +58,17 @@ public class CurfewStatusCheckingServiceTest
     public async Task CheckForCurfewAndNotifyShouldNotifyNightIfIsNightAndLastCurfewLogIsNull()
     {
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var curfewNotificationServiceMock = new Mock<ICurfewNotificationService>(MockBehavior.Strict);
+        var curfewNotificationServiceMock = new Mock<ICurfewService>(MockBehavior.Strict);
 
         curfewNotificationServiceMock.Setup(curfewNotificationService => curfewNotificationService.NotifyNightAsync())
             .Returns(Task.FromResult(0));
 
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(Night).ConfigureAwait(false);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Night);
 
             curfewNotificationServiceMock.Verify(curfewNotificationService => curfewNotificationService.NotifyNightAsync());
         }
@@ -78,24 +78,24 @@ public class CurfewStatusCheckingServiceTest
     public async Task CheckForCurfewAndNotifyShouldNotifyNightIfIsNightAndLastCurfewLogIsDay()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.CurfewLogs.Add(new CurfewLog(CurfewEventType.Day));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var curfewNotificationServiceMock = new Mock<ICurfewNotificationService>(MockBehavior.Strict);
+        var curfewNotificationServiceMock = new Mock<ICurfewService>(MockBehavior.Strict);
 
         curfewNotificationServiceMock.Setup(curfewNotificationService => curfewNotificationService.NotifyNightAsync())
             .Returns(Task.FromResult(0));
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(Night).ConfigureAwait(false);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Night);
 
             curfewNotificationServiceMock.Verify(curfewNotificationService => curfewNotificationService.NotifyNightAsync());
         }
@@ -105,21 +105,21 @@ public class CurfewStatusCheckingServiceTest
     public async Task CheckForCurfewAndNotifyShouldDoAnythingIfIsNightAndLastCurfewLogIsNight()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.CurfewLogs.Add(new CurfewLog(CurfewEventType.Night));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var curfewNotificationServiceMock = new Mock<ICurfewNotificationService>(MockBehavior.Strict);
+        var curfewNotificationServiceMock = new Mock<ICurfewService>(MockBehavior.Strict);
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(Night).ConfigureAwait(false);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Night);
         }
     }
 
@@ -127,14 +127,14 @@ public class CurfewStatusCheckingServiceTest
     public async Task CheckForCurfewAndNotifyShouldShouldLogExceptionIfIsNotifyNightFailed()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.CurfewLogs.Add(new CurfewLog(CurfewEventType.Day));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var curfewNotificationServiceMock = new Mock<ICurfewNotificationService>(MockBehavior.Strict);
+        var curfewNotificationServiceMock = new Mock<ICurfewService>(MockBehavior.Strict);
 
         rollbarMock.Setup(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()))
             .Returns(rollbarMock.Object);
@@ -143,11 +143,11 @@ public class CurfewStatusCheckingServiceTest
             .ThrowsAsync(new InvalidOperationException());
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(Night).ConfigureAwait(false);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Night);
 
             rollbarMock.Verify(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()));
         }
@@ -157,17 +157,17 @@ public class CurfewStatusCheckingServiceTest
     public async Task CheckForCurfewAndNotifyShouldNotifyDayIfIsDayAndLastCurfewLogIsNull()
     {
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var curfewNotificationServiceMock = new Mock<ICurfewNotificationService>(MockBehavior.Strict);
+        var curfewNotificationServiceMock = new Mock<ICurfewService>(MockBehavior.Strict);
 
         curfewNotificationServiceMock.Setup(curfewNotificationService => curfewNotificationService.NotifyDayAsync())
             .Returns(Task.FromResult(0));
 
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(Day).ConfigureAwait(false);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Day);
 
             curfewNotificationServiceMock.Verify(curfewNotificationService => curfewNotificationService.NotifyDayAsync());
         }
@@ -177,24 +177,24 @@ public class CurfewStatusCheckingServiceTest
     public async Task CheckForCurfewAndNotifyShouldNotifyDayIfIsDayAndLastCurfewLogIsNight()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.CurfewLogs.Add(new CurfewLog(CurfewEventType.Night));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var curfewNotificationServiceMock = new Mock<ICurfewNotificationService>(MockBehavior.Strict);
+        var curfewNotificationServiceMock = new Mock<ICurfewService>(MockBehavior.Strict);
 
         curfewNotificationServiceMock.Setup(curfewNotificationService => curfewNotificationService.NotifyDayAsync())
             .Returns(Task.FromResult(0));
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(Day).ConfigureAwait(false);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Day);
 
             curfewNotificationServiceMock.Verify(curfewNotificationService => curfewNotificationService.NotifyDayAsync());
         }
@@ -204,21 +204,21 @@ public class CurfewStatusCheckingServiceTest
     public async Task CheckForCurfewAndNotifyShouldDoAnythingIfIsDayAndLastCurfewLogIsDay()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.CurfewLogs.Add(new CurfewLog(CurfewEventType.Day));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var curfewNotificationServiceMock = new Mock<ICurfewNotificationService>(MockBehavior.Strict);
+        var curfewNotificationServiceMock = new Mock<ICurfewService>(MockBehavior.Strict);
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(Day).ConfigureAwait(false);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Day);
         }
     }
 
@@ -226,14 +226,14 @@ public class CurfewStatusCheckingServiceTest
     public async Task CheckForCurfewAndNotifyShouldShouldLogExceptionIfIsNotifyDayFailed()
     {
         var alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             alarmBotContext.CurfewLogs.Add(new CurfewLog(CurfewEventType.Night));
-            await alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await alarmBotContext.SaveChangesAsync();
         }
 
         var rollbarMock = new Mock<IRollbar>(MockBehavior.Strict);
-        var curfewNotificationServiceMock = new Mock<ICurfewNotificationService>(MockBehavior.Strict);
+        var curfewNotificationServiceMock = new Mock<ICurfewService>(MockBehavior.Strict);
 
         rollbarMock.Setup(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()))
             .Returns(rollbarMock.Object);
@@ -242,11 +242,11 @@ public class CurfewStatusCheckingServiceTest
             .ThrowsAsync(new InvalidOperationException());
 
         alarmBotContext = DbContextFactory.Create();
-        await using (alarmBotContext.ConfigureAwait(false))
+        await using (alarmBotContext)
         {
             var curfewStatusCheckingService = new CurfewStatusCheckingService(rollbarMock.Object, curfewNotificationServiceMock.Object, alarmBotContext);
 
-            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(Day).ConfigureAwait(false);
+            await curfewStatusCheckingService.CheckForCurfewAndNotifyAsync(this.Day);
 
             rollbarMock.Verify(rollbar => rollbar.Critical(It.IsAny<InvalidOperationException>(), It.IsAny<Dictionary<string, object?>>()));
         }

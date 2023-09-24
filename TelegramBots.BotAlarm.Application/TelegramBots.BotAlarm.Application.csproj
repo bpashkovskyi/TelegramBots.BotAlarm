@@ -20,6 +20,7 @@
 	  <ProjectReference Include="..\TelegramBots.BotAlarm.Application.Base\TelegramBots.BotAlarm.Application.Base.csproj" />
 	  <ProjectReference Include="..\TelegramBots.BotAlarm.Domain\TelegramBots.BotAlarm.Domain.csproj" />
 	  <ProjectReference Include="..\TelegramBots.BotAlarm.Infrastructure.Base\TelegramBots.BotAlarm.Infrastructure.Base.csproj" />
+	  <ProjectReference Include="..\TelegramBots.BotAlarm.Persistence.Base\TelegramBots.BotAlarm.Persistence.Base.csproj" />
 	  <ProjectReference Include="..\TelegramBots.BotAlarm.Persistence\TelegramBots.BotAlarm.Persistence.csproj" />
 	</ItemGroup>
 

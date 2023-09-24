@@ -5,23 +5,23 @@
 [AllowedChats(AppSettings.AdminChatId)]
 public class NightUpdateHandler : UpdateHandler
 {
-    private readonly ICurfewNotificationService curfewNotificationService;
+    private readonly ICurfewService _curfewService;
     private readonly IBotService botService;
 
     public NightUpdateHandler(
         IRollbar rollbar,
         ITelegramBotClient telegramBotClient,
-        ICurfewNotificationService curfewNotificationService,
+        ICurfewService curfewService,
         IBotService botService)
         : base(rollbar, telegramBotClient)
     {
-        this.curfewNotificationService = curfewNotificationService;
+        this._curfewService = curfewService;
         this.botService = botService;
     }
 
     public override async Task HandleAsync(Update update)
     {
-        await this.curfewNotificationService.NotifyNightAsync().ConfigureAwait(false);
-        await this.botService.StopAutomaticChecking().ConfigureAwait(false);
+        await this._curfewService.NotifyNightAsync();
+        await this.botService.StopAutomaticChecking();
     }
 }
