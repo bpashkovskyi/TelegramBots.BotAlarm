@@ -10,5 +10,5 @@ public interface IAlarmService
 
     Task NotifyTestAsync();
 
-    Task RemoveAlarmLogAsync(int alarmLogId);
+    Task DeleteAlarmLogAsync(int alarmLogId);
 }

@@ -8,8 +8,6 @@ public interface ISafeTelegramClient
 {
     Task<Message?> SendTextMessageAsync(long chatId, string messageText);
 
-    Task<Message?> SendStickerAsync(long chatId, string fileId);
-
     Task BlockChatAsync(long chatId);
 
     Task UnblockChatAsync(long chatId);

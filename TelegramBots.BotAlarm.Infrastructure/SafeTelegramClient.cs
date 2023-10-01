@@ -9,7 +9,6 @@ using Rollbar;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InputFiles;
 
 using TelegramBots.BotAlarm.Infrastructure.Base;
 
@@ -32,31 +31,7 @@ public class SafeTelegramClient : ISafeTelegramClient
         }
         catch (Exception exception)
         {
-            this.rollbar.Critical(
-                exception,
-                new Dictionary<string, object?>
-                {
-                    { "chat", chatId },
-                });
-
-            return null;
-        }
-    }
-
-    public async Task<Message?> SendStickerAsync(long chatId, string fileId)
-    {
-        try
-        {
-            return await this.telegramBotClient.SendStickerAsync(chatId, new InputOnlineFile(fileId));
-        }
-        catch (Exception exception)
-        {
-            this.rollbar.Critical(
-                exception,
-                new Dictionary<string, object?>
-                {
-                    { "chat", chatId },
-                });
+            this.LogCriticalError(chatId, exception);
 
             return null;
         }
@@ -76,12 +51,7 @@ public class SafeTelegramClient : ISafeTelegramClient
         }
         catch (Exception exception)
         {
-            this.rollbar.Critical(
-                exception,
-                new Dictionary<string, object?>
-                {
-                    { "chat", chatId },
-                });
+            this.LogCriticalError(chatId, exception);
         }
     }
 
@@ -99,12 +69,7 @@ public class SafeTelegramClient : ISafeTelegramClient
         }
         catch (Exception exception)
         {
-            this.rollbar.Critical(
-                exception,
-                new Dictionary<string, object?>
-                {
-                    { "chat", chatId },
-                });
+            this.LogCriticalError(chatId, exception);
         }
     }
 
@@ -116,12 +81,15 @@ public class SafeTelegramClient : ISafeTelegramClient
         }
         catch (Exception exception)
         {
-            this.rollbar.Critical(
-                exception,
-                new Dictionary<string, object?>
-                {
-                    { "chat", chatId },
-                });
+            this.LogCriticalError(chatId, exception);
         }
+    }
+
+    private void LogCriticalError(long chatId, Exception exception)
+    {
+        this.rollbar.Critical(exception, new Dictionary<string, object?>
+        {
+            { "chat", chatId },
+        });
     }
 }

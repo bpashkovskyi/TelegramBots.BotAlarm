@@ -22,7 +22,7 @@ public class DeleteAlarmLogUpdateHandler : UpdateHandler
         var alarmLogId = message.TextAsInt();
         if (alarmLogId != null)
         {
-            await this.alarmService.RemoveAlarmLogAsync(alarmLogId.Value);
+            await this.alarmService.DeleteAlarmLogAsync(alarmLogId.Value);
         }
     }
 }

@@ -16,9 +16,9 @@ public static class AppSettings
 
     public static string RejectText => $"🟢  <b>{UaLocalTime.ToString("HH:mm", CultureInfo.InvariantCulture)}</b> Відбій тривоги!\nСлідкуйте за подальшими повідомленнями.";
 
-    ////public static string BlockText => "Можливість писати повідомлення з'явиться після команди \"Відбій\"";
+    public static string BlockText => "Можливість писати повідомлення з'явиться після команди \"Відбій\"";
 
-    ////public static string UnblockText => "Тепер є можливість писати повідомлення.";
+    public static string UnblockText => "Тепер є можливість писати повідомлення.";
 
     public static string BotStoppedMessage => "Бота переведено у ручний режим";
 
@@ -29,8 +29,6 @@ public static class AppSettings
     public static string CurfewUnblockText => "Комендантська година закінчилася. Тепер є можливість писати повідомлення.";
 
     private static DateTime UaLocalTime => TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("FLE Standard Time"));
-
-    public static string HoursWithoutAlarmText(int hoursWithoutAlarm) => $"<b>{UaLocalTime.ToString("HH:mm", CultureInfo.InvariantCulture)}</b> {hoursWithoutAlarm} {HoursConverter.ConvertHoursToString(hoursWithoutAlarm)} без тривог. Слава ЗСУ";
 
     public static string AlarmMessageSentText(int alarmLogId) => $"Номер повідомлення про тривогу: {alarmLogId}. Виконайте команду '/deletealarm {alarmLogId}', щоб видалити це повідомлення зі всіх чатів. Виконайте команду '/stop', щоб зупинити автоматичний режим бота.";
 

@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using TelegramBots.BotAlarm.Persistence;
-
 namespace TelegramBots.BotAlarm.Application;
 
 public class AlarmService : IAlarmService
@@ -116,7 +114,7 @@ public class AlarmService : IAlarmService
         await this.safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.AlarmMessageSentText(alarmLog.Id)).ConfigureAwait(false);
     }
 
-    public async Task RemoveAlarmLogAsync(int alarmLogId)
+    public async Task DeleteAlarmLogAsync(int alarmLogId)
     {
         var alarmLog = await this.alarmBotContext.AlarmLogs
             .Include(alarmLog => alarmLog.AlarmLogMessages)

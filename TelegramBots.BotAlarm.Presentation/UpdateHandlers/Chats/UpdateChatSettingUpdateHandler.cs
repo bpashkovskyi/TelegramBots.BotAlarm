@@ -9,13 +9,13 @@ public class UpdateChatSettingUpdateHandler : UpdateHandler
 {
     private readonly IChatService chatService;
 
-    public UpdateChatSettingUpdateHandler(IRollbar rollbar, ITelegramBotClient telegramBotClient, IChatService chatService)
+    protected UpdateChatSettingUpdateHandler(IRollbar rollbar, ITelegramBotClient telegramBotClient, IChatService chatService)
         : base(rollbar, telegramBotClient)
     {
         this.chatService = chatService;
     }
 
-    public async Task UpdateChatSettingsAsync(Update update, Action<ChatSettings> action)
+    protected async Task UpdateChatSettingsAsync(Update update, Action<ChatSettings> action)
     {
         var message = update.Message!;
 
