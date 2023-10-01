@@ -54,15 +54,6 @@ public class AlarmStatusCheckingService : IAlarmStatusCheckingService
             {
                 await this.alarmService.NotifyRejectAsync();
             }
-            else if (this.IsQuietTimeHasToBeNotified(lastAlarmLog, isAlarmActive))
-            {
-                var lastAlarmLogWithTypeReject = await this.alarmBotContext.AlarmLogs.WithEventType(AlarmEventType.Reject).NotDeleted().Last();
-                if (lastAlarmLogWithTypeReject != null)
-                {
-                    var hoursWithoutAlarm = (int)(DateTime.UtcNow - lastAlarmLogWithTypeReject.DateTime).TotalHours;
-                    await this.alarmService.NotifyQuiteTimeAsync(hoursWithoutAlarm);
-                }
-            }
         }
         catch (Exception exception)
         {
@@ -99,20 +90,6 @@ public class AlarmStatusCheckingService : IAlarmStatusCheckingService
     private bool IsContinuationHasToBeNotified(AlarmLog? lastAlarmLog, bool isAlarmActive)
     {
         if (isAlarmActive && lastAlarmLog != null)
-        {
-            var hoursSpentFromLastNotification = (DateTime.UtcNow - lastAlarmLog.DateTime).TotalHours;
-            if (hoursSpentFromLastNotification >= 1)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private bool IsQuietTimeHasToBeNotified(AlarmLog? lastAlarmLog, bool isAlarmActive)
-    {
-        if (!isAlarmActive && lastAlarmLog != null && lastAlarmLog.EventType != AlarmEventType.Alarm && lastAlarmLog.EventType != AlarmEventType.Continue)
         {
             var hoursSpentFromLastNotification = (DateTime.UtcNow - lastAlarmLog.DateTime).TotalHours;
             if (hoursSpentFromLastNotification >= 1)
