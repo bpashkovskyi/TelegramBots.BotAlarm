@@ -19,7 +19,7 @@ using Rollbar;
 public class CurfewStatusCheckingServiceTest
 {
     private readonly DateTime day = new DateTime(2022, 1, 1, 15, 0, 0);
-    private readonly DateTime night = new DateTime(2022, 1, 1, 3, 0, 0);
+    private readonly DateTime night = new DateTime(2022, 1, 1, 2, 0, 0);
 
     [TestInitialize]
     public async Task TestInitialize()
