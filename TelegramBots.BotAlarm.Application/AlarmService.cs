@@ -17,12 +17,12 @@ public class AlarmService : IAlarmService
     public async Task NotifyAlarmAsync()
     {
         var alarmLog = new AlarmLog(AlarmEventType.Alarm);
-        var chats = await this.alarmBotContext.Chats.ToListAsync().ConfigureAwait(false);
+        var chats = await this.alarmBotContext.Chats.ToListAsync();
 
         var chatsToBroadcast = chats.Where(currentChat => currentChat.Settings.BroadcastMessageDuringAlarm);
         foreach (var chatToBroadcast in chatsToBroadcast)
         {
-            var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBroadcast.TelegramId, AppSettings.AlarmText).ConfigureAwait(false);
+            var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBroadcast.TelegramId, AppSettings.AlarmText);
             alarmLog.AddMessage(message, chatToBroadcast);
         }
 
@@ -31,48 +31,48 @@ public class AlarmService : IAlarmService
         {
             if (!chatToBlockDuringAlarm.Status.BlockedDuringCurfew)
             {
-                await this.safeTelegramClient.BlockChatAsync(chatToBlockDuringAlarm.TelegramId).ConfigureAwait(false);
+                await this.safeTelegramClient.BlockChatAsync(chatToBlockDuringAlarm.TelegramId);
 
-                ////var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBlockDuringAlarm.TelegramId, AppSettings.BlockText).ConfigureAwait(false);
+                ////var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBlockDuringAlarm.TelegramId, AppSettings.BlockText);
                 ////alarmLog.AddMessage(message, chatToBlockDuringAlarm);
             }
 
             chatToBlockDuringAlarm.Status.BlockedDuringAlarm = true;
         }
 
-        await this.alarmBotContext.AddAsync(alarmLog).ConfigureAwait(false);
-        await this.alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+        await this.alarmBotContext.AddAsync(alarmLog);
+        await this.alarmBotContext.SaveChangesAsync();
 
-        await this.safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.AlarmMessageSentText(alarmLog.Id)).ConfigureAwait(false);
+        await this.safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.AlarmMessageSentText(alarmLog.Id));
     }
 
     public async Task NotifyContinuationAsync()
     {
         var alarmLog = new AlarmLog(AlarmEventType.Continue);
-        var chats = await this.alarmBotContext.Chats.ToListAsync().ConfigureAwait(false);
+        var chats = await this.alarmBotContext.Chats.ToListAsync();
 
         var chatsToBroadcast = chats.Where(currentChat => currentChat.Settings.BroadcastMessageDuringAlarm);
         foreach (var chatToBroadcast in chatsToBroadcast)
         {
-            var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBroadcast.TelegramId, AppSettings.ContinueText).ConfigureAwait(false);
+            var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBroadcast.TelegramId, AppSettings.ContinueText);
             alarmLog.AddMessage(message, chatToBroadcast);
         }
 
-        await this.alarmBotContext.AddAsync(alarmLog).ConfigureAwait(false);
-        await this.alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+        await this.alarmBotContext.AddAsync(alarmLog);
+        await this.alarmBotContext.SaveChangesAsync();
 
-        await this.safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.AlarmMessageSentText(alarmLog.Id)).ConfigureAwait(false);
+        await this.safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.AlarmMessageSentText(alarmLog.Id));
     }
 
     public async Task NotifyRejectAsync()
     {
         var alarmLog = new AlarmLog(AlarmEventType.Reject);
-        var chats = await this.alarmBotContext.Chats.ToListAsync().ConfigureAwait(false);
+        var chats = await this.alarmBotContext.Chats.ToListAsync();
 
         var chatsToBroadcast = chats.Where(currentChat => currentChat.Settings.BroadcastMessageDuringAlarm);
         foreach (var chatToBroadcast in chatsToBroadcast)
         {
-            var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBroadcast.TelegramId, AppSettings.RejectText).ConfigureAwait(false);
+            var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBroadcast.TelegramId, AppSettings.RejectText);
             alarmLog.AddMessage(message, chatToBroadcast);
         }
 
@@ -81,37 +81,37 @@ public class AlarmService : IAlarmService
         {
             if (!chatToBlockDuringAlarm.Status.BlockedDuringCurfew)
             {
-                await this.safeTelegramClient.UnblockChatAsync(chatToBlockDuringAlarm.TelegramId).ConfigureAwait(false);
+                await this.safeTelegramClient.UnblockChatAsync(chatToBlockDuringAlarm.TelegramId);
 
-                ////var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBlockDuringAlarm.TelegramId, AppSettings.UnblockText).ConfigureAwait(false);
+                ////var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBlockDuringAlarm.TelegramId, AppSettings.UnblockText);
                 ////alarmLog.AddMessage(message, chatToBlockDuringAlarm);
             }
 
             chatToBlockDuringAlarm.Status.BlockedDuringAlarm = false;
         }
 
-        await this.alarmBotContext.AddAsync(alarmLog).ConfigureAwait(false);
-        await this.alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+        await this.alarmBotContext.AddAsync(alarmLog);
+        await this.alarmBotContext.SaveChangesAsync();
 
-        await this.safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.AlarmMessageSentText(alarmLog.Id)).ConfigureAwait(false);
+        await this.safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.AlarmMessageSentText(alarmLog.Id));
     }
 
     public async Task NotifyTestAsync()
     {
         var alarmLog = new AlarmLog(AlarmEventType.QuiteTime);
-        var chats = await this.alarmBotContext.Chats.ToListAsync().ConfigureAwait(false);
+        var chats = await this.alarmBotContext.Chats.ToListAsync();
 
         var chatsToBroadcast = chats.Where(currentChat => currentChat.Settings.BroadcastMessageDuringAlarm);
         foreach (var chatToBroadcast in chatsToBroadcast.Where(chat => chat.TelegramId == AppSettings.AdminChatId))
         {
-            var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBroadcast.TelegramId, AppSettings.AlarmText).ConfigureAwait(false);
+            var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBroadcast.TelegramId, AppSettings.AlarmText);
             alarmLog.AddMessage(message, chatToBroadcast);
         }
 
-        await this.alarmBotContext.AddAsync(alarmLog).ConfigureAwait(false);
-        await this.alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+        await this.alarmBotContext.AddAsync(alarmLog);
+        await this.alarmBotContext.SaveChangesAsync();
 
-        await this.safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.AlarmMessageSentText(alarmLog.Id)).ConfigureAwait(false);
+        await this.safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.AlarmMessageSentText(alarmLog.Id));
     }
 
     public async Task DeleteAlarmLogAsync(int alarmLogId)
@@ -119,17 +119,17 @@ public class AlarmService : IAlarmService
         var alarmLog = await this.alarmBotContext.AlarmLogs
             .Include(alarmLog => alarmLog.AlarmLogMessages)
             .ThenInclude(dbAlarmLogMessage => dbAlarmLogMessage.Chat)
-            .FirstAsync(alarmLog => alarmLog.Id == alarmLogId).ConfigureAwait(false);
+            .FirstAsync(alarmLog => alarmLog.Id == alarmLogId);
 
         if (!alarmLog.IsDeleted)
         {
             foreach (var alarmLogMessage in alarmLog.AlarmLogMessages)
             {
-                await this.safeTelegramClient.DeleteTelegramMessage(alarmLogMessage.Chat!.TelegramId, alarmLogMessage.MessageId).ConfigureAwait(false);
+                await this.safeTelegramClient.DeleteTelegramMessage(alarmLogMessage.Chat!.TelegramId, alarmLogMessage.MessageId);
             }
 
             alarmLog.MarkAsDeleted();
-            await this.alarmBotContext.SaveChangesAsync().ConfigureAwait(false);
+            await this.alarmBotContext.SaveChangesAsync();
         }
     }
 }
