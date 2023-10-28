@@ -1,0 +1,97 @@
+name: $[format('1.0.{0}', counter('1.0', 0))]
+
+trigger:
+  branches:
+    include:
+    - main
+
+variables:
+
+  - name: ProjectPath
+    value: 'TelegramBots.BotAlarm.Presentation'
+
+  - name: AppName
+    value: 'ifalarm'
+    
+  - name: AzureSubscription
+    value: 'Pay-As-You-Go (1ac531e3-ffe9-4610-a52d-2b61f8151f33)'
+
+
+stages:
+  - stage: Build
+    displayName: 'Build, Run Tests and Publish Artifacts'
+
+    jobs:
+    - job: build
+      displayName: Build, Run Tests and Publish Artifacts Job
+      pool:
+        vmImage: windows-latest
+
+      steps:
+
+      - checkout: self
+        clean: true
+
+      - task: NuGetToolInstaller@0
+        displayName: Use NuGet
+        inputs:
+          versionSpec: 6.1.0
+
+      - task: DotNetCoreCLI@2
+        displayName: Restore NuGet Packages
+        inputs:
+          command: restore
+          projects: '**/*.csproj'
+
+      - task: DotNetCoreCLI@2
+        displayName: Build Projects
+        inputs:
+          projects: '**/*.sln'
+
+      - task: DotNetCoreCLI@2
+        displayName: Run Tests
+        inputs:
+          command: test
+          projects: '**/*.*Test*.csproj'
+
+      - task: DotNetCoreCLI@2
+        displayName: Publish Web API
+        inputs:
+          command: publish
+          publishWebProjects: false
+          projects: '**/$(ProjectPath).csproj'
+          arguments: --output $(Build.ArtifactStagingDirectory)
+
+      - task: PublishPipelineArtifact@1
+        displayName: Publish Artifact Web API
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifact: 'WebApp'
+
+  - stage: Deploy
+    displayName: 'Deploy Azure App'
+
+    jobs:
+    - job: deploy
+      displayName: 'Deploy Azure App'
+      pool:
+        vmImage: windows-latest
+
+      steps:
+      
+      - task: DownloadPipelineArtifact@2
+        displayName: 'Download Web App Files'
+        inputs:
+          buildType: 'current'
+          artifactName: 'WebApp'
+          downloadPath: '$(System.ArtifactsDirectory)'
+
+      - task: AzureRmWebAppDeployment@4
+        displayName: 'Deploy Azure App Service'
+        inputs:
+          ConnectionType: 'AzureRM'
+          azureSubscription: '$(AzureSubscription)'
+          appType: 'webApp'
+          WebAppName: '$(AppName)'
+          packageForLinux: '$(System.ArtifactsDirectory)/$(ProjectPath).zip'
+...
