@@ -6,4 +6,5 @@ public enum AlarmEventType
     Continue = 1,
     Reject = 2,
     QuiteTime = 3,
+    BroadcastMessage = 4
 }

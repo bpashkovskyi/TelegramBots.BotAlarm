@@ -132,4 +132,21 @@ public class AlarmService : IAlarmService
             await this.alarmBotContext.SaveChangesAsync();
         }
     }
+
+    public async Task BroadcastMessageAsync(string messageText)
+    {
+        var alarmLog = new AlarmLog(AlarmEventType.BroadcastMessage);
+        var chats = await this.alarmBotContext.Chats.ToListAsync();
+
+        foreach (var chatToBroadcast in chats)
+        {
+            var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBroadcast.TelegramId, messageText);
+            alarmLog.AddMessage(message, chatToBroadcast);
+        }
+
+        await this.alarmBotContext.AddAsync(alarmLog);
+        await this.alarmBotContext.SaveChangesAsync();
+
+        await this.safeTelegramClient.SendTextMessageAsync(AppSettings.AdminChatId, AppSettings.AlarmMessageSentText(alarmLog.Id));
+    }
 }
