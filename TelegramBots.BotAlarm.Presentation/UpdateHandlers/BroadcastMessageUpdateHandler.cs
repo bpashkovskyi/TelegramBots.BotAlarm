@@ -9,8 +9,7 @@ public class BroadcastMessageUpdateHandler : UpdateHandler
     public BroadcastMessageUpdateHandler(
         IRollbar rollbar,
         ITelegramBotClient telegramBotClient,
-        IAlarmService alarmService,
-        IBotService botService)
+        IAlarmService alarmService)
         : base(rollbar, telegramBotClient)
     {
         this.alarmService = alarmService;
