@@ -138,7 +138,8 @@ public class AlarmService : IAlarmService
         var alarmLog = new AlarmLog(AlarmEventType.BroadcastMessage);
         var chats = await this.alarmBotContext.Chats.ToListAsync();
 
-        foreach (var chatToBroadcast in chats)
+        var chatsToBroadcast = chats.Where(currentChat => currentChat.Settings.BroadcastMessageDuringBroadcast);
+        foreach (var chatToBroadcast in chatsToBroadcast)
         {
             var message = await this.safeTelegramClient.SendTextMessageAsync(chatToBroadcast.TelegramId, messageText);
             alarmLog.AddMessage(message, chatToBroadcast);

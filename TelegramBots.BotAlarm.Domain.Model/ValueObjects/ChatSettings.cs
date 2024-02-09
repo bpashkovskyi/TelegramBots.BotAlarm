@@ -7,4 +7,6 @@ public class ChatSettings
     public bool BlockChatDuringAlarm { get; set; }
 
     public bool BlockChatDuringCurfew { get; set; }
+    
+    public bool BroadcastMessageDuringBroadcast { get; set; }
 }
