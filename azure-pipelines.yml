@@ -6,16 +6,7 @@ trigger:
     - master
 
 variables:
-
-  - name: ProjectPath
-    value: 'TelegramBots.BotAlarm.Presentation'
-
-  - name: AppName
-    value: 'ifalarm'
-    
-  - name: AzureSubscription
-    value: 'Pay-As-You-Go (1ac531e3-ffe9-4610-a52d-2b61f8151f33)'
-
+- group: bot-alarm
 
 stages:
   - stage: Build
