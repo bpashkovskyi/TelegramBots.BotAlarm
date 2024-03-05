@@ -5,6 +5,8 @@ using MediatR;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 
+using System.Reflection;
+
 using TelegramBots.BotAlarm.Application;
 using TelegramBots.BotAlarm.Domain.Base;
 using TelegramBots.BotAlarm.Infrastructure;
@@ -26,7 +28,7 @@ public static class Program
 
         // Application
         builder.Services.AddUpdatesMediator();
-        builder.Services.AddMediatR(typeof(Program));
+        builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
         builder.Services.AddScoped<IAlarmService, AlarmService>();
         builder.Services.AddScoped<IAlarmService, AlarmService>();
         builder.Services.AddScoped<ICurfewService, CurfewService>();
