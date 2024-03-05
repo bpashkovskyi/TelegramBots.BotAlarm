@@ -27,7 +27,7 @@ public class SafeTelegramClient : ISafeTelegramClient
     {
         try
         {
-            return await this.telegramBotClient.SendTextMessageAsync(chatId, messageText, ParseMode.Html);
+            return await this.telegramBotClient.SendTextMessageAsync(chatId, messageText, parseMode: ParseMode.Html);
         }
         catch (Exception exception)
         {
@@ -46,7 +46,8 @@ public class SafeTelegramClient : ISafeTelegramClient
                 new ChatPermissions
                 {
                     CanSendMessages = false,
-                    CanSendMediaMessages = false,
+                    CanSendPhotos = false,
+                    CanSendVideos = false
                 });
         }
         catch (Exception exception)
@@ -63,8 +64,9 @@ public class SafeTelegramClient : ISafeTelegramClient
                 chatId,
                 new ChatPermissions
                 {
-                    CanSendMessages = true,
-                    CanSendMediaMessages = true,
+                    CanSendMessages = false,
+                    CanSendPhotos = false,
+                    CanSendVideos = false
                 });
         }
         catch (Exception exception)
